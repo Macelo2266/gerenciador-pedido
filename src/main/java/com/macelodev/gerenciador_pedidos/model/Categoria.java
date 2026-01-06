@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(name = "categorias")
 public class Categoria {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -13,8 +14,9 @@ public class Categoria {
     @Column(nullable = false, unique = true)
     private String nome;
 
-    @OneToMany(mappedBy = "categoria", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "categoria", fetch = FetchType.LAZY)
     private List<Produto> produtos = new ArrayList<>();
+
 
 
     public Categoria() {}

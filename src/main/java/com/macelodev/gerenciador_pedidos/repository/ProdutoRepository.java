@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public interface ProdutoRepository extends JpaRepository<Produto, Long> {
-    List<Produto> findByNomeContaining(String nome);
+    List<Produto> findByNomeContainingIgnoreCase(String nome);
 
     List<Produto> findByCategoria(Categoria categoria);
     long countByCategoria(Categoria categoria);
@@ -18,17 +18,12 @@ public interface ProdutoRepository extends JpaRepository<Produto, Long> {
 
     List<Produto> findByPrecoLessThan(BigDecimal preco);
 
-    List<Produto> findByNomeContainingIgnoreCase(String termo);
-
     List<Produto> findByCategoriaOrderByPrecoAsc(Categoria categoria);
-
     List<Produto> findByCategoriaOrderByPrecoDesc(Categoria categoria);
 
     List<Produto> findByPrecoLessThanOrNomeContainingIgnoreCase(BigDecimal preco, String termo);
 
     List<Produto> findTop3ByOrderByPrecoDesc();
-
     List<Produto> findTop5ByCategoriaOrderByPrecoAsc(Categoria categoria);
-
 
 }

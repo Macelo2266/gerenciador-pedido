@@ -2,11 +2,13 @@ package com.macelodev.gerenciador_pedidos.model;
 
 import jakarta.persistence.*;
 
+import javax.naming.Name;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@Table(name = "produtos")
 public class Produto {
 
     @Id
@@ -27,33 +29,34 @@ public class Produto {
     @ManyToMany(mappedBy = "produtos")
     private Set<Pedido> pedidos = new HashSet<>();
 
-    @Column(name = "valor")
-    private Double preco;
+    @Column(nullable = false)
+    private BigDecimal preco;
+
 
     public Produto() {}
 
     public Produto(String nome, BigDecimal preco, Categoria categoria,Fornecedor fornecedor) {
         this.nome = nome;
-        this.preco = preco.doubleValue();
+        this.preco = preco;
         this.categoria = categoria;
         this.fornecedor = fornecedor;
     }
 
     public Produto(String teclado, double valor) {
         this.nome = teclado;
-        this.preco = valor;
+        this.preco = new BigDecimal(valor);
     }
 
     public Long getId() { return id; }
     public String getNome() { return nome; }
-    public Double getPreco() { return preco; }
+    public BigDecimal getPreco() { return preco; }
     public Categoria getCategoria() { return categoria; }
     public Fornecedor getFornecedor() { return fornecedor; }
     public Set<Pedido> getPedidos() { return pedidos; }
 
     public void setId(Long id) { this.id = id; }
     public void setNome(String nome) { this.nome = nome; }
-    public void setPreco(Double preco) { this.preco = preco; }
+    public void setPreco(BigDecimal preco) { this.preco = preco; }
     public void setCategoria(Categoria categoria) { this.categoria = categoria; }
     public void setFornecedor(Fornecedor fornecedor) { this.fornecedor = fornecedor; }
     public void setPedidos(Set<Pedido> pedidos) { this.pedidos = pedidos; }

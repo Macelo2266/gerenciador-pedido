@@ -3,6 +3,7 @@ package com.macelodev.gerenciador_pedidos.model;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "fornecedores")
 public class Fornecedor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
