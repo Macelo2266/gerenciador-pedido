@@ -7,5 +7,7 @@ import java.util.Optional;
 
 public interface FornecedorRepository extends JpaRepository<Fornecedor, Long> {
 
+    Optional<Fornecedor> findByNomeIgnoreCase(String nome);
 
+    boolean existsByNomeIgnoreCase(String nome);
 }

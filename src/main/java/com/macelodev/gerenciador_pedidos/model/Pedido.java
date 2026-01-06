@@ -1,8 +1,11 @@
 package com.macelodev.gerenciador_pedidos.model;
 
 import jakarta.persistence.*;
+
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -13,11 +16,11 @@ public class Pedido {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private LocalDate data;
+    private LocalDate data = LocalDate.now();
 
     private LocalDate dataEntrega;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
     @JoinTable(
             name = "pedido_produto",
             joinColumns = @JoinColumn(name = "pedido_id"),
@@ -25,34 +28,43 @@ public class Pedido {
     )
     private Set<Produto> produtos = new HashSet<>();
 
-
     public Pedido() {}
 
-    public Pedido(LocalDate data, LocalDate dataEntrega) {
-        this.data = data;
+    public Pedido(LocalDate dataEntrega) {
         this.dataEntrega = dataEntrega;
     }
 
     public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
     public LocalDate getData() { return data; }
-    public void setData(LocalDate data) { this.data = data; }
-
     public LocalDate getDataEntrega() { return dataEntrega; }
+    public Set<Produto> getProdutos() { return produtos; }
+
+    public void setId(Long id) { this.id = id; }
+    public void setData(LocalDate data) { this.data = data; }
     public void setDataEntrega(LocalDate dataEntrega) { this.dataEntrega = dataEntrega; }
 
-    public Set<Produto> getProdutos() { return produtos; }
-    public void setProdutos(Set<Produto> produtos) { this.produtos = produtos; }
+    public void adicionarProduto(Produto produto) {
+        produtos.add(produto);
+    }
+
+    public void removerProduto(Produto produto) {
+        produtos.remove(produto);
+    }
+    public void setProdutos(List<Produto> produtos) {
+        this.produtos = new HashSet<>(produtos);
+    }
 
     @Override
-    public String toString() {
-        return "Pedido{" +
-                "id=" + id +
-                ", produtos=" + produtos +
-                ", data=" + data +
-                ", dataEntrega=" + dataEntrega +
-                '}';
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Pedido)) return false;
+        Pedido pedido = (Pedido) o;
+        return Objects.equals(id, pedido.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
 

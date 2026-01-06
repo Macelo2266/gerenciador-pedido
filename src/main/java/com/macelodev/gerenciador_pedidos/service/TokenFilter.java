@@ -1,12 +1,8 @@
 package com.macelodev.gerenciador_pedidos.service;
 
-
-import com.macelodev.gerenciador_pedidos.model.Usuario;
 import com.macelodev.gerenciador_pedidos.repository.UsuarioRepository;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.*;
+import jakarta.servlet.http.*;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,7 +10,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 public class TokenFilter extends OncePerRequestFilter {
 
@@ -24,6 +19,11 @@ public class TokenFilter extends OncePerRequestFilter {
     public TokenFilter(TokenService tokenService, UsuarioRepository repository) {
         this.tokenService = tokenService;
         this.repository = repository;
+    }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        return request.getServletPath().startsWith("/auth");
     }
 
     @Override
@@ -42,7 +42,7 @@ public class TokenFilter extends OncePerRequestFilter {
 
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(
-                                usuario.getEmail(),
+                                usuario,
                                 null,
                                 List.of(
                                         new SimpleGrantedAuthority(
@@ -66,3 +66,4 @@ public class TokenFilter extends OncePerRequestFilter {
                 : null;
     }
 }
+

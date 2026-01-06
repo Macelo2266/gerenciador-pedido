@@ -14,7 +14,6 @@ import java.util.List;
 @Service
 public class ProdutoService {
 
-
     private final ProdutoRepository produtoRepository;
     private final CategoriaRepository categoriaRepository;
     private final FornecedorRepository fornecedorRepository;
@@ -29,15 +28,7 @@ public class ProdutoService {
         this.fornecedorRepository = fornecedorRepository;
     }
 
-    /**
-     * Criar produto
-     */
-    public Produto criar(
-            String nome,
-            BigDecimal preco,
-            Long categoriaId,
-            Long fornecedorId
-    ) {
+    public Produto criar(String nome, BigDecimal preco, Long categoriaId, Long fornecedorId) {
 
         Categoria categoria = categoriaRepository.findById(categoriaId)
                 .orElseThrow(() -> new RuntimeException("Categoria não encontrada"));
@@ -45,36 +36,25 @@ public class ProdutoService {
         Fornecedor fornecedor = fornecedorRepository.findById(fornecedorId)
                 .orElseThrow(() -> new RuntimeException("Fornecedor não encontrado"));
 
-        Produto produto = new Produto();
-        produto.setNome(nome);
-        produto.setPreco(preco);
-        produto.setCategoria(categoria);
-        produto.setFornecedor(fornecedor);
-
+        Produto produto = new Produto(nome, preco, categoria, fornecedor);
         return produtoRepository.save(produto);
     }
 
-    /**
-     * Listar todos os produtos
-     */
-    public List<Produto> listarTodos() {
+    public Produto salvar(Produto produto) {
+        return produtoRepository.save(produto);
+    }
+
+    public List<Produto> listar() {
         return produtoRepository.findAll();
     }
 
-    /**
-     * Buscar produto por ID
-     */
     public Produto buscarPorId(Long id) {
         return produtoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
     }
 
-    /**
-     * Remover produto
-     */
     public void remover(Long id) {
-        Produto produto = buscarPorId(id);
-        produtoRepository.delete(produto);
+        produtoRepository.delete(buscarPorId(id));
     }
-
 }
+

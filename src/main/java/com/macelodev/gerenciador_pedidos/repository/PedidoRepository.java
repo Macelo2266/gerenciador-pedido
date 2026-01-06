@@ -1,7 +1,6 @@
 package com.macelodev.gerenciador_pedidos.repository;
 
 import com.macelodev.gerenciador_pedidos.model.Pedido;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -10,13 +9,16 @@ import java.util.List;
 
 public interface PedidoRepository extends JpaRepository<Pedido, Long> {
 
+    // 📦 Status
     List<Pedido> findByDataEntregaIsNull();
     List<Pedido> findByDataEntregaIsNotNull();
 
+    // 📅 Datas
     List<Pedido> findByDataAfter(LocalDate data);
     List<Pedido> findByDataBefore(LocalDate data);
     List<Pedido> findByDataBetween(LocalDate inicio, LocalDate fim);
 
+    // 🚀 Otimização
     @Query("SELECT DISTINCT p FROM Pedido p LEFT JOIN FETCH p.produtos")
     List<Pedido> findAllWithProdutos();
 }

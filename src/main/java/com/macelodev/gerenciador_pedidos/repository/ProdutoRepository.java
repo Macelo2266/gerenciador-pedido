@@ -8,22 +8,29 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public interface ProdutoRepository extends JpaRepository<Produto, Long> {
+
+    // 🔍 Busca
     List<Produto> findByNomeContainingIgnoreCase(String nome);
 
+    // 📦 Categoria
     List<Produto> findByCategoria(Categoria categoria);
     long countByCategoria(Categoria categoria);
 
+    // 💰 Preço
     List<Produto> findByPrecoGreaterThan(BigDecimal preco);
-    long countByPrecoGreaterThan(BigDecimal preco);
-
     List<Produto> findByPrecoLessThan(BigDecimal preco);
 
+    // 📊 Ordenações
     List<Produto> findByCategoriaOrderByPrecoAsc(Categoria categoria);
     List<Produto> findByCategoriaOrderByPrecoDesc(Categoria categoria);
 
-    List<Produto> findByPrecoLessThanOrNomeContainingIgnoreCase(BigDecimal preco, String termo);
+    // 🔎 Busca combinada
+    List<Produto> findByPrecoLessThanOrNomeContainingIgnoreCase(
+            BigDecimal preco,
+            String termo
+    );
 
+    // ⭐ Destaques
     List<Produto> findTop3ByOrderByPrecoDesc();
     List<Produto> findTop5ByCategoriaOrderByPrecoAsc(Categoria categoria);
-
 }
