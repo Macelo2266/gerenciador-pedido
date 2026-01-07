@@ -34,10 +34,27 @@ public class SecurityConfig {
                         sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(auth -> auth
+                        // 1. ROTAS PÚBLICAS
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/produtos/**")
-                        .hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/usuarios").permitAll() // Cadastro inicial
+
+                        // 2. FORNECEDORES (Somente ADMIN pode cadastrar/editar/deletar)
+                        .requestMatchers(HttpMethod.POST, "/fornecedores/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/fornecedores/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/fornecedores/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/fornecedores/**").hasAnyRole("ADMIN", "CLIENTE")
+
+                        // 3. PRODUTOS (Somente ADMIN cadastra/edita, mas todos podem ver)
+                        .requestMatchers(HttpMethod.POST, "/produtos/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/produtos/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/produtos/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/produtos/**").hasAnyRole("ADMIN", "CLIENTE")
+
+                        // 4. PEDIDOS (Qualquer usuário logado pode acessar)
+                        .requestMatchers("/pedidos/**").authenticated()
+
+                        // 5. QUALQUER OUTRA REQUISIÇÃO
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(
@@ -47,6 +64,9 @@ public class SecurityConfig {
 
         return http.build();
     }
+
+
+
 
     @Bean
     AuthenticationManager authenticationManager(

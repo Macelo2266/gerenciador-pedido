@@ -1,8 +1,10 @@
 package com.macelodev.gerenciador_pedidos.controller;
 
+import com.macelodev.gerenciador_pedidos.DTOs.UsuarioRegistroDTO;
 import com.macelodev.gerenciador_pedidos.model.Usuario;
 import com.macelodev.gerenciador_pedidos.service.UsuarioService;
-import org.springframework.security.access.prepost.PreAuthorize;
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,30 +13,32 @@ import java.util.List;
 @RequestMapping("/usuarios")
 public class UsuarioController {
 
+
     private final UsuarioService service;
 
     public UsuarioController(UsuarioService service) {
         this.service = service;
     }
 
-    // Criar usuário (ADMIN)
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
-    public Usuario salvar(@RequestBody Usuario usuario) {
-        return service.salvar(usuario);
+    public ResponseEntity<Usuario> cadastrar(@RequestBody @Valid UsuarioRegistroDTO dto) {
+        Usuario usuarioSalvo = service.cadastrar(dto);
+        return ResponseEntity.ok(usuarioSalvo);
     }
 
-    // Listar usuários (ADMIN)
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN')")
-    public List<Usuario> listar() {
-        return service.listar();
+    public ResponseEntity<List<Usuario>> listar() {
+        return ResponseEntity.ok(service.listar());
     }
 
-    // Buscar por ID
-    @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public Usuario buscarPorId(@PathVariable Long id) {
-        return service.buscarPorId(id);
+    @PutMapping("/{id}")
+    public ResponseEntity<Usuario> atualizar(@PathVariable Long id, @RequestBody @Valid UsuarioRegistroDTO dto) {
+        return ResponseEntity.ok(service.atualizar(id, dto));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletar(@PathVariable Long id) {
+        service.deletar(id);
+        return ResponseEntity.noContent().build();
     }
 }

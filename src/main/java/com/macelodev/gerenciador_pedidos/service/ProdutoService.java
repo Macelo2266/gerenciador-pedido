@@ -1,5 +1,6 @@
 package com.macelodev.gerenciador_pedidos.service;
 
+import com.macelodev.gerenciador_pedidos.DTOs.ProdutoCadastroDTO;
 import com.macelodev.gerenciador_pedidos.model.Categoria;
 import com.macelodev.gerenciador_pedidos.model.Fornecedor;
 import com.macelodev.gerenciador_pedidos.model.Produto;
@@ -28,33 +29,25 @@ public class ProdutoService {
         this.fornecedorRepository = fornecedorRepository;
     }
 
-    public Produto criar(String nome, BigDecimal preco, Long categoriaId, Long fornecedorId) {
+    public Produto criar(ProdutoCadastroDTO dto) {
 
-        Categoria categoria = categoriaRepository.findById(categoriaId)
+        Categoria categoria = categoriaRepository.findById(dto.categoriaId())
                 .orElseThrow(() -> new RuntimeException("Categoria não encontrada"));
 
-        Fornecedor fornecedor = fornecedorRepository.findById(fornecedorId)
+        Fornecedor fornecedor = fornecedorRepository.findById(dto.fornecedorId())
                 .orElseThrow(() -> new RuntimeException("Fornecedor não encontrado"));
 
-        Produto produto = new Produto(nome, preco, categoria, fornecedor);
-        return produtoRepository.save(produto);
-    }
+        Produto produto = new Produto();
+        produto.setNome(dto.nome());
+        produto.setPreco(dto.preco());
+        produto.setEstoque(dto.estoque());
+        produto.setCategoria(categoria);
+        produto.setFornecedor(fornecedor);
 
-    public Produto salvar(Produto produto) {
         return produtoRepository.save(produto);
     }
 
     public List<Produto> listar() {
         return produtoRepository.findAll();
     }
-
-    public Produto buscarPorId(Long id) {
-        return produtoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
-    }
-
-    public void remover(Long id) {
-        produtoRepository.delete(buscarPorId(id));
-    }
 }
-

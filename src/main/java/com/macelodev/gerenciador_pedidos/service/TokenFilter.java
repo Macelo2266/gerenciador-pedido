@@ -39,20 +39,14 @@ public class TokenFilter extends OncePerRequestFilter {
             String email = tokenService.validarToken(token);
 
             repository.findByEmail(email).ifPresent(usuario -> {
-
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(
                                 usuario,
                                 null,
-                                List.of(
-                                        new SimpleGrantedAuthority(
-                                                usuario.getPerfil().name()
-                                        )
-                                )
+                                usuario.getAuthorities()
                         );
 
-                SecurityContextHolder.getContext()
-                        .setAuthentication(authentication);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
             });
         }
 

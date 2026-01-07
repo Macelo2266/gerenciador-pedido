@@ -5,11 +5,11 @@ import org.springframework.security.core.userdetails.*;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserDetailsServiceImpl implements UserDetailsService {
+public class UserDetailsService implements org.springframework.security.core.userdetails.UserDetailsService {
 
     private final UsuarioRepository repository;
 
-    public UserDetailsServiceImpl(UsuarioRepository repository) {
+    public UserDetailsService(UsuarioRepository repository) {
         this.repository = repository;
     }
 

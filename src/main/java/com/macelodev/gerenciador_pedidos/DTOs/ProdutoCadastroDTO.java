@@ -12,7 +12,7 @@ public record ProdutoCadastroDTO(@NotBlank
                                  BigDecimal preco,
 
                                  @NotNull
-                                       Integer quantidade,
+                                       Integer estoque,
 
                                  @NotNull
                                        Long categoriaId,

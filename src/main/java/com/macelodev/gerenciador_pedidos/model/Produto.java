@@ -22,13 +22,19 @@ public class Produto {
     @Column(nullable = false)
     private BigDecimal preco;
 
-    @ManyToOne
-    @JoinColumn(name = "categoria_id")
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "categoria_id", nullable = false)
     private Categoria categoria;
 
-    @ManyToOne
-    @JoinColumn(name = "fornecedor_id")
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "fornecedor_id", nullable = false)
     private Fornecedor fornecedor;
+
+    @Column(nullable = false)
+    private Integer estoque;
+
+    public Integer getEstoque() { return estoque; }
+    public void setEstoque(Integer estoque) { this.estoque = estoque; }
 
     @ManyToMany(mappedBy = "produtos")
     @JsonIgnore
@@ -45,12 +51,22 @@ public class Produto {
 
     public Long getId() { return id; }
     public String getNome() { return nome; }
+
+    public Set<Pedido> getPedidos() {
+        return pedidos;
+    }
+
     public BigDecimal getPreco() { return preco; }
     public Categoria getCategoria() { return categoria; }
     public Fornecedor getFornecedor() { return fornecedor; }
 
     public void setId(Long id) { this.id = id; }
     public void setNome(String nome) { this.nome = nome; }
+
+    public void setPedidos(Set<Pedido> pedidos) {
+        this.pedidos = pedidos;
+    }
+
     public void setPreco(BigDecimal preco) { this.preco = preco; }
     public void setCategoria(Categoria categoria) { this.categoria = categoria; }
     public void setFornecedor(Fornecedor fornecedor) { this.fornecedor = fornecedor; }

@@ -25,19 +25,14 @@ public class AuthController {
 
     @PostMapping("/login")
     public TokenDTO login(@RequestBody LoginDTO dto) {
-
         UsernamePasswordAuthenticationToken authToken =
-                new UsernamePasswordAuthenticationToken(
-                        dto.email(),
-                        dto.senha()
-                );
+                new UsernamePasswordAuthenticationToken(dto.email(), dto.senha());
 
-        Authentication authentication =
-                authenticationManager.authenticate(authToken);
 
-        Usuario usuario = (Usuario) authentication.getPrincipal();
+        Authentication authentication = authenticationManager.authenticate(authToken);
 
-        String token = tokenService.gerarToken((Authentication) usuario);
+
+        String token = tokenService.gerarToken(authentication);
 
         return new TokenDTO(token);
     }

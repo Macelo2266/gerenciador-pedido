@@ -25,9 +25,8 @@ public class TokenService {
     }
 
     public String validarToken(String token) {
-
         return Jwts.parserBuilder()
-                .setSigningKey(secret.getBytes())
+                .setSigningKey(Keys.hmacShaKeyFor(secret.getBytes())) // Use Keys.hmacShaKeyFor aqui também
                 .build()
                 .parseClaimsJws(token)
                 .getBody()

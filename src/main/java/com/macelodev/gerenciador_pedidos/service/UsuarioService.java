@@ -1,6 +1,6 @@
 package com.macelodev.gerenciador_pedidos.service;
 
-import com.macelodev.gerenciador_pedidos.DTOs.UsuarioCadastroDTO;
+import com.macelodev.gerenciador_pedidos.DTOs.UsuarioRegistroDTO;
 import com.macelodev.gerenciador_pedidos.model.Usuario;
 import com.macelodev.gerenciador_pedidos.repository.UsuarioRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -12,47 +12,41 @@ import java.util.List;
 public class UsuarioService {
 
     private final UsuarioRepository repository;
-    private final PasswordEncoder encoder;
+    private final PasswordEncoder passwordEncoder;
 
-    public UsuarioService(UsuarioRepository repository, PasswordEncoder encoder) {
+    public UsuarioService(UsuarioRepository repository, PasswordEncoder passwordEncoder) {
         this.repository = repository;
-        this.encoder = encoder;
+        this.passwordEncoder = passwordEncoder;
     }
 
-    // Método para o Controller usar no POST /cadastro
-    public Usuario cadastrar(UsuarioCadastroDTO dto) {
-        if (repository.existsByEmail(dto.email())) {
-            throw new RuntimeException("Email já cadastrado");
-        }
-
-        Usuario usuario = new Usuario(
-                dto.email(),
-                encoder.encode(dto.senha()),
-                dto.perfil()
-        );
-
-        return repository.save(usuario);
+    public Usuario cadastrar(UsuarioRegistroDTO dto) {
+        String senhaCriptografada = passwordEncoder.encode(dto.senha());
+        Usuario novoUsuario = new Usuario(dto.email(), senhaCriptografada, dto.perfil());
+        return repository.save(novoUsuario);
     }
 
-    // --- ADICIONE OS MÉTODOS ABAIXO PARA RESOLVER OS ERROS ---
-
-    // Resolve: method listar()
     public List<Usuario> listar() {
         return repository.findAll();
     }
 
-    // Resolve: method salvar(Usuario)
-    public Usuario salvar(Usuario usuario) {
-        // Se a senha estiver vindo bruta do controller, encripte-a aqui
-        if (usuario.getSenha() != null && !usuario.getSenha().startsWith("$2a$")) {
-            usuario.setSenha(encoder.encode(usuario.getSenha()));
+    public Usuario atualizar(Long id, UsuarioRegistroDTO dto) {
+        Usuario usuarioExistente = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado!"));
+
+        usuarioExistente.setEmail(dto.email());
+        usuarioExistente.setPerfil(dto.perfil());
+
+        if (dto.senha() != null && !dto.senha().isBlank()) {
+            usuarioExistente.setSenha(passwordEncoder.encode(dto.senha()));
         }
-        return repository.save(usuario);
+
+        return repository.save(usuarioExistente);
     }
 
-    // Resolve: method buscarPorId(Long)
-    public Usuario buscarPorId(Long id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+    public void deletar(Long id) {
+        if (!repository.existsById(id)) {
+            throw new RuntimeException("Usuário não encontrado!");
+        }
+        repository.deleteById(id);
     }
 }

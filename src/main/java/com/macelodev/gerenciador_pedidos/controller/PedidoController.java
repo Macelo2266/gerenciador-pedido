@@ -1,5 +1,7 @@
 package com.macelodev.gerenciador_pedidos.controller;
 
+import com.macelodev.gerenciador_pedidos.DTOs.DataEntregaRequestDTO;
+import com.macelodev.gerenciador_pedidos.DTOs.PedidoRequestDTO;
 import com.macelodev.gerenciador_pedidos.model.Pedido;
 import com.macelodev.gerenciador_pedidos.service.PedidoService;
 import org.springframework.web.bind.annotation.*;
@@ -18,8 +20,8 @@ public class PedidoController {
 
     // Criar pedido
     @PostMapping
-    public Pedido criar(@RequestBody Pedido pedido) {
-        return service.salvar(pedido);
+    public Pedido criar(@RequestBody PedidoRequestDTO dto) {
+        return service.criar(dto);
     }
 
     // Listar pedidos
@@ -28,10 +30,19 @@ public class PedidoController {
         return service.listar();
     }
 
-    // Buscar por ID
+    // Buscar pedido por ID
     @GetMapping("/{id}")
     public Pedido buscarPorId(@PathVariable Long id) {
         return service.buscarPorId(id);
     }
 
+    // Marcar como entregue
+    @PutMapping("/{id}/entregar")
+    public void entregar(
+            @PathVariable Long id,
+            @RequestBody DataEntregaRequestDTO dto
+    ) {
+        service.marcarComoEntregue(id, dto);
+    }
 }
+
