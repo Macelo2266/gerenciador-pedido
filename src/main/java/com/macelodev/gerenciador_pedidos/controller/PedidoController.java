@@ -1,9 +1,11 @@
 package com.macelodev.gerenciador_pedidos.controller;
 
-import com.macelodev.gerenciador_pedidos.DTOs.DataEntregaRequestDTO;
-import com.macelodev.gerenciador_pedidos.DTOs.PedidoRequestDTO;
+import com.macelodev.gerenciador_pedidos.dto.DataEntregaRequestDTO;
+import com.macelodev.gerenciador_pedidos.dto.PedidoRequestDTO;
 import com.macelodev.gerenciador_pedidos.model.Pedido;
+import com.macelodev.gerenciador_pedidos.model.Usuario;
 import com.macelodev.gerenciador_pedidos.service.PedidoService;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,31 +20,35 @@ public class PedidoController {
         this.service = service;
     }
 
-    // Criar pedido
     @PostMapping
-    public Pedido criar(@RequestBody PedidoRequestDTO dto) {
-        return service.criar(dto);
+    public Pedido criar(
+            @RequestBody PedidoRequestDTO dto,
+            @AuthenticationPrincipal Usuario usuario
+    ) {
+        return service.criar(dto, usuario);
     }
 
-    // Listar pedidos
+
     @GetMapping
-    public List<Pedido> listar() {
-        return service.listar();
+    public List<Pedido> listar(@AuthenticationPrincipal Usuario usuario) {
+        return service.listar(usuario);
     }
 
-    // Buscar pedido por ID
+
     @GetMapping("/{id}")
-    public Pedido buscarPorId(@PathVariable Long id) {
-        return service.buscarPorId(id);
+    public Pedido buscarPorId(
+            @PathVariable Long id,
+            @AuthenticationPrincipal Usuario usuario
+    ) {
+        return service.buscarPorId(id, usuario);
     }
 
-    // Marcar como entregue
     @PutMapping("/{id}/entregar")
     public void entregar(
             @PathVariable Long id,
-            @RequestBody DataEntregaRequestDTO dto
+            @RequestBody DataEntregaRequestDTO dto,
+            @AuthenticationPrincipal Usuario usuario
     ) {
-        service.marcarComoEntregue(id, dto);
+        service.marcarComoEntregue(id, dto, usuario);
     }
 }
-

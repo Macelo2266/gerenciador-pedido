@@ -34,28 +34,17 @@ public class SecurityConfig {
                         sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(auth -> auth
-                        // 1. ROTAS PÚBLICAS
                         .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/usuarios").permitAll() // Cadastro inicial
+                        .requestMatchers(HttpMethod.POST, "/usuarios").permitAll()
 
-                        // 2. FORNECEDORES (Somente ADMIN pode cadastrar/editar/deletar)
-                        .requestMatchers(HttpMethod.POST, "/fornecedores/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/fornecedores/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/fornecedores/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/fornecedores/**").hasAnyRole("ADMIN", "CLIENTE")
+                        // Simplificado: Todas as operações de escrita/deleção são ADMIN
+                        .requestMatchers(HttpMethod.GET, "/fornecedores/**", "/produtos/**").hasAnyRole("ADMIN", "CLIENTE")
+                        .requestMatchers("/fornecedores/**", "/produtos/**").hasRole("ADMIN")
 
-                        // 3. PRODUTOS (Somente ADMIN cadastra/edita, mas todos podem ver)
-                        .requestMatchers(HttpMethod.POST, "/produtos/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/produtos/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/produtos/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/produtos/**").hasAnyRole("ADMIN", "CLIENTE")
-
-                        // 4. PEDIDOS (Qualquer usuário logado pode acessar)
                         .requestMatchers("/pedidos/**").authenticated()
 
-                        // 5. QUALQUER OUTRA REQUISIÇÃO
-                        .anyRequest().authenticated()
+                        // Bloqueia qualquer outro path não mapeado por padrão (Whitelist approach)
+                        .anyRequest().denyAll()
                 )
                 .addFilterBefore(
                         new TokenFilter(tokenService, repository),
@@ -64,9 +53,6 @@ public class SecurityConfig {
 
         return http.build();
     }
-
-
-
 
     @Bean
     AuthenticationManager authenticationManager(

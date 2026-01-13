@@ -1,7 +1,7 @@
 package com.macelodev.gerenciador_pedidos.controller;
 
-import com.macelodev.gerenciador_pedidos.DTOs.ProdutoCadastroDTO;
-import com.macelodev.gerenciador_pedidos.DTOs.ProdutoResponseDTO;
+import com.macelodev.gerenciador_pedidos.dto.ProdutoCadastroDTO;
+import com.macelodev.gerenciador_pedidos.dto.ProdutoResponseDTO;
 import com.macelodev.gerenciador_pedidos.model.Produto;
 import com.macelodev.gerenciador_pedidos.service.ProdutoService;
 import jakarta.validation.Valid;

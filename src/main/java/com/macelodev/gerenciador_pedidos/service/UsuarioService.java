@@ -1,6 +1,6 @@
 package com.macelodev.gerenciador_pedidos.service;
 
-import com.macelodev.gerenciador_pedidos.DTOs.UsuarioRegistroDTO;
+import com.macelodev.gerenciador_pedidos.dto.UsuarioRegistroDTO;
 import com.macelodev.gerenciador_pedidos.model.Usuario;
 import com.macelodev.gerenciador_pedidos.repository.UsuarioRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;

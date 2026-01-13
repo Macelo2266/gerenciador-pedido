@@ -1,4 +1,4 @@
-package com.macelodev.gerenciador_pedidos.DTOs;
+package com.macelodev.gerenciador_pedidos.dto;
 
 import jakarta.validation.constraints.NotEmpty;
 import java.util.List;

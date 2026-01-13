@@ -1,8 +1,7 @@
 package com.macelodev.gerenciador_pedidos.controller;
 
-import com.macelodev.gerenciador_pedidos.DTOs.LoginDTO;
-import com.macelodev.gerenciador_pedidos.DTOs.TokenDTO;
-import com.macelodev.gerenciador_pedidos.model.Usuario;
+import com.macelodev.gerenciador_pedidos.dto.LoginDTO;
+import com.macelodev.gerenciador_pedidos.dto.TokenDTO;
 import com.macelodev.gerenciador_pedidos.service.TokenService;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;

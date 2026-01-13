@@ -4,12 +4,11 @@ import com.macelodev.gerenciador_pedidos.repository.UsuarioRepository;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.Optional;
 
 public class TokenFilter extends OncePerRequestFilter {
 
@@ -33,31 +32,35 @@ public class TokenFilter extends OncePerRequestFilter {
             FilterChain filterChain
     ) throws ServletException, IOException {
 
-        String token = recuperarToken(request);
+        // Correção: Tratando o Optional com ifPresent para evitar erro de tipos incompatíveis
+        recuperarToken(request).ifPresent(token -> {
+            try {
+                String email = tokenService.validarToken(token);
 
-        if (token != null) {
-            String email = tokenService.validarToken(token);
+                repository.findByEmail(email).ifPresent(usuario -> {
+                    UsernamePasswordAuthenticationToken authentication =
+                            new UsernamePasswordAuthenticationToken(
+                                    usuario,
+                                    null,
+                                    usuario.getAuthorities()
+                            );
 
-            repository.findByEmail(email).ifPresent(usuario -> {
-                UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(
-                                usuario,
-                                null,
-                                usuario.getAuthorities()
-                        );
-
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-            });
-        }
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                });
+            } catch (Exception e) {
+                // Caso o token seja inválido ou expirado, o contexto de segurança não é definido
+                logger.error("Erro ao validar token: " + e.getMessage());
+            }
+        });
 
         filterChain.doFilter(request, response);
     }
 
-    private String recuperarToken(HttpServletRequest request) {
+    private Optional<String> recuperarToken(HttpServletRequest request) {
         String bearer = request.getHeader("Authorization");
-        return (bearer != null && bearer.startsWith("Bearer "))
-                ? bearer.substring(7)
-                : null;
+        if (bearer != null && bearer.startsWith("Bearer ")) {
+            return Optional.of(bearer.substring(7));
+        }
+        return Optional.empty();
     }
 }
-

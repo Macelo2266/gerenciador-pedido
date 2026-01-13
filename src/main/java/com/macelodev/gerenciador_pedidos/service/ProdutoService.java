@@ -1,6 +1,6 @@
 package com.macelodev.gerenciador_pedidos.service;
 
-import com.macelodev.gerenciador_pedidos.DTOs.ProdutoCadastroDTO;
+import com.macelodev.gerenciador_pedidos.dto.ProdutoCadastroDTO;
 import com.macelodev.gerenciador_pedidos.model.Categoria;
 import com.macelodev.gerenciador_pedidos.model.Fornecedor;
 import com.macelodev.gerenciador_pedidos.model.Produto;
@@ -9,7 +9,6 @@ import com.macelodev.gerenciador_pedidos.repository.FornecedorRepository;
 import com.macelodev.gerenciador_pedidos.repository.ProdutoRepository;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @Service

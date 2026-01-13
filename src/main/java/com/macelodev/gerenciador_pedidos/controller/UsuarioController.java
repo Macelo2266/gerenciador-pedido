@@ -1,6 +1,7 @@
 package com.macelodev.gerenciador_pedidos.controller;
 
-import com.macelodev.gerenciador_pedidos.DTOs.UsuarioRegistroDTO;
+import com.macelodev.gerenciador_pedidos.dto.UsuarioRegistroDTO;
+import com.macelodev.gerenciador_pedidos.dto.UsuarioResponseDTO;
 import com.macelodev.gerenciador_pedidos.model.Usuario;
 import com.macelodev.gerenciador_pedidos.service.UsuarioService;
 import jakarta.validation.Valid;
@@ -27,8 +28,11 @@ public class UsuarioController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Usuario>> listar() {
-        return ResponseEntity.ok(service.listar());
+    public ResponseEntity<List<UsuarioResponseDTO>> listar() {
+        var lista = service.listar().stream()
+                .map(u -> new UsuarioResponseDTO(u.getId(), u.getEmail(), u.getPerfil()))
+                .toList();
+        return ResponseEntity.ok(lista);
     }
 
     @PutMapping("/{id}")

@@ -1,15 +1,16 @@
 package com.macelodev.gerenciador_pedidos.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "pedidos")
+@Getter
+@Setter
 public class Pedido {
 
     @Id
@@ -26,7 +27,11 @@ public class Pedido {
             joinColumns = @JoinColumn(name = "pedido_id"),
             inverseJoinColumns = @JoinColumn(name = "produto_id")
     )
-    private Set<Produto> produtos = new HashSet<>();
+    private List<Produto> produtos = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name = "usuario_id")
+    private Usuario usuario;
 
     public Pedido() {}
 
@@ -34,25 +39,13 @@ public class Pedido {
         this.dataEntrega = dataEntrega;
     }
 
-    public Long getId() { return id; }
-    public LocalDate getData() { return data; }
-    public LocalDate getDataEntrega() { return dataEntrega; }
-    public Set<Produto> getProdutos() { return produtos; }
 
-    public void setId(Long id) { this.id = id; }
-    public void setData(LocalDate data) { this.data = data; }
-    public void setDataEntrega(LocalDate dataEntrega) { this.dataEntrega = dataEntrega; }
 
-    public void adicionarProduto(Produto produto) {
-        produtos.add(produto);
-    }
 
     public void removerProduto(Produto produto) {
-        produtos.remove(produto);
+        this.produtos.remove(produto);
     }
-    public void setProdutos(List<Produto> produtos) {
-        this.produtos = new HashSet<>(produtos);
-    }
+
 
     @Override
     public boolean equals(Object o) {
@@ -67,4 +60,5 @@ public class Pedido {
         return Objects.hash(id);
     }
 }
+
 

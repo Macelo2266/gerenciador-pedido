@@ -2,16 +2,18 @@ package com.macelodev.gerenciador_pedidos.service;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.Optional;
 
 @Service
 public class TokenService {
 
-    @Value("${jwt.secret}")
+    @Value("${JWT_SECRET}")
     private String secret;
 
     public String gerarToken(Authentication auth) {
@@ -32,4 +34,5 @@ public class TokenService {
                 .getBody()
                 .getSubject();
     }
+
 }
